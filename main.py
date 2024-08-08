@@ -1,7 +1,7 @@
 import pygame
 import ctypes
 import sys
-import interactive
+from interactive import add_interactive_elements
 
 # Initialize Pygame
 pygame.init()
@@ -53,7 +53,7 @@ class Window:
         pygame.display.set_caption(self.title)
 
 def main():
-    global current_window
+    global screen, current_window
     current_window = Window("Main Window", WHITE, 900, 500)
     char_x, char_y = current_window.width // 2, current_window.height // 2
 
@@ -105,7 +105,9 @@ def main():
         pygame.display.flip()
 
         # Add interactive elements
-        interactive.add_interactive_elements()
+        box=add_interactive_elements(current_window.width, current_window.height)
+        pygame.draw.rect(current_window.screen, (0, 128, 255), box)
+        pygame.display.flip()
 
         clock.tick(30)
 
