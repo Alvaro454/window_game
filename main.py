@@ -54,6 +54,7 @@ class Window:
 
 def main():
     global screen, current_window
+    i=0
     current_window = Window("Main Window", WHITE, 900, 500)
     char_x, char_y = current_window.width // 2, current_window.height // 2
 
@@ -71,21 +72,25 @@ def main():
             current_window = Window("Window 1", BLUE, 1000, 500)
             current_window.center_window()
             char_x, char_y = current_window.width - char_size, current_window.height // 2
+            i=0
         elif char_x > current_window.width - char_size:  # Right border
             char_x = current_window.width - char_size
             current_window = Window("Window 2", RED, 1500, 700)
             current_window.center_window()
             char_x, char_y = 0, current_window.height // 2
+            i=0
         elif char_y < 0:  # Top border
             char_y = 0
             current_window = Window("Window 3", PURPLE, 800, 600)
             current_window.center_window()
             char_x, char_y = current_window.width // 2, current_window.height - char_size
+            i=0
         elif char_y > current_window.height - char_size:  # Bottom border
             char_y = current_window.height - char_size
             current_window = Window("Window 4", YELLOW, 1200, 800)
             current_window.center_window()
             char_x, char_y = current_window.width // 2, 0
+            i=0
         
         # Control character
         if keys[pygame.K_LEFT]:
@@ -104,8 +109,10 @@ def main():
         pygame.draw.rect(current_window.screen, GREEN, (char_x, char_y, char_size, char_size))
         pygame.display.flip()
 
-        # Add interactive elements
-        box=add_interactive_elements(current_window.width, current_window.height)
+        if i == 0:
+            # Add interactive elements
+            box=add_interactive_elements(current_window.width, current_window.height)
+            i=1
         pygame.draw.rect(current_window.screen, (0, 128, 255), box)
         pygame.display.flip()
 
