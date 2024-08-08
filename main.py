@@ -5,6 +5,7 @@ from interactive import add_interactive_elements
 
 # Initialize Pygame
 pygame.init()
+pygame.font.init()
 
 # Colors
 WHITE = (255, 255, 255)
@@ -14,12 +15,22 @@ GREEN = (0, 255, 0)
 PURPLE = (255, 0, 255)
 YELLOW = (255, 255, 0)
 
+# Font settings
+font = pygame.font.Font(None, 36)  # None for default font, 36 for font size
+text = "Hello, Pygame!"
+text_color = (0, 0, 0)  # Black color
+text_surface = font.render(text, True, text_color)
+text_position = (50, 50)  # Position the text at (50, 50)
+text_rect = text_surface.get_rect(topleft=text_position)
+
 # Character settings
 char_size = 50
 char_speed = 5
 
 # Clock to control frame rate
 clock = pygame.time.Clock()
+
+
 
 class Window:
     def __init__(self, title, color, width, height):
@@ -53,8 +64,10 @@ class Window:
         pygame.display.set_caption(self.title)
 
 def main():
+    # Add interactive elements
+    i = 0
+    box = None
     global screen, current_window
-    i=0
     current_window = Window("Main Window", WHITE, 900, 500)
     char_x, char_y = current_window.width // 2, current_window.height // 2
 
@@ -104,17 +117,47 @@ def main():
 
         # Update the current window
         current_window.update()
-        
+
+        # Draw the text
+        current_window.screen.blit(text_surface, (50, 50))  # Position the text at (50, 50)
+
+        # Create a rectangle for the character
+        char_rect = pygame.Rect(char_x, char_y, char_size, char_size)
+
+        if char_rect.colliderect(text_rect):
+            # Open a new window
+            new_window = pygame.display.set_mode((400, 300))
+            pygame.display.set_caption('New Window')
+            new_window.fill(WHITE)
+            pygame.display.flip()
+            pygame.time.wait(2000)  # Wait for 2 seconds before closing the new window
+            running = False
+
         # Draw the character
         pygame.draw.rect(current_window.screen, GREEN, (char_x, char_y, char_size, char_size))
+
+        # Update the display
         pygame.display.flip()
 
         if i == 0:
             # Add interactive elements
-            box=add_interactive_elements(current_window.width, current_window.height)
-            i=1
-        pygame.draw.rect(current_window.screen, (0, 128, 255), box)
+            image, box = add_interactive_elements(current_window.width, current_window.height, surface=current_window.screen)
+            i = 1
+
+        # Draw the interactive elements
+        if image:
+            current_window.screen.blit(image, box.topleft)
+
         pygame.display.flip()
+
+        if char_rect.colliderect(box):
+            # Open a new window
+            new_window = pygame.display.set_mode((400, 300))
+            pygame.display.set_caption('New Window')
+            new_window.fill(WHITE)
+            pygame.display.flip()
+            pygame.time.wait(2000)  # Wait for 2 seconds before closing the new window
+            running = False
 
         clock.tick(30)
 
